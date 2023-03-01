@@ -2,11 +2,16 @@ import * as express from 'express';
 import * as http from 'http';
 import * as https from 'https';
 import type { Server } from 'net';
+import type { HandlerArgument, PathArgument } from './types';
 
 export class ExpressAdapter {
   protected httpServer!: http.Server | https.Server;
 
   constructor(private readonly instance: express.Application) {}
+
+  public get(path: PathArgument, handler: HandlerArgument) {
+    return this.instance.get(path, handler);
+  }
 
   public getInstance() {
     return this.instance;
