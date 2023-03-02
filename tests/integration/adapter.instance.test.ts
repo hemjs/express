@@ -1,12 +1,15 @@
+import { Needle } from '@hemjs/needle';
 import * as express from 'express';
 import * as request from 'supertest';
-import { ExpressAdapter } from '../../src';
+import { ExpressAdapter, ExpressModule } from '../../src';
 
 describe('.getInstance()', () => {
   let instance: express.Application;
 
   beforeEach(() => {
-    const adapter = new ExpressAdapter(express());
+    const providers = new ExpressModule().register()?.['providers'] ?? [];
+    const container = new Needle(providers);
+    const adapter = container.get<ExpressAdapter>(ExpressAdapter.name);
     instance = adapter.getInstance();
   });
 

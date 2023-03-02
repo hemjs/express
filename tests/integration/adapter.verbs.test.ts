@@ -1,12 +1,14 @@
-import * as express from 'express';
+import { Needle } from '@hemjs/needle';
 import * as request from 'supertest';
-import { ExpressAdapter } from '../../src';
+import { ExpressAdapter, ExpressModule } from '../../src';
 
 describe('HTTP Verbs', () => {
   let adapter: ExpressAdapter;
 
   beforeEach(() => {
-    adapter = new ExpressAdapter(express());
+    const providers = new ExpressModule().register()?.['providers'] ?? [];
+    const container = new Needle(providers);
+    adapter = container.get<ExpressAdapter>(ExpressAdapter.name);
     adapter.initHttpServer({});
   });
 
