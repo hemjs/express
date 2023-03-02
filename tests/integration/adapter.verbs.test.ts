@@ -20,4 +20,11 @@ describe('HTTP Verbs', () => {
       await request(adapter.getHttpServer()).get('/').expect(200, 'value');
     });
   });
+
+  describe('.post()', () => {
+    it('should support POST method', async () => {
+      adapter.post('/', (req: any, res: any) => res.send('value'));
+      await request(adapter.getHttpServer()).post('/').expect(200, 'value');
+    });
+  });
 });

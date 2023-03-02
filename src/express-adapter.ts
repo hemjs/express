@@ -13,6 +13,10 @@ export class ExpressAdapter {
     return this.instance.get(path, handler);
   }
 
+  public post(path: PathArgument, handler: HandlerArgument) {
+    return this.instance.post(path, handler);
+  }
+
   public getInstance() {
     return this.instance;
   }
