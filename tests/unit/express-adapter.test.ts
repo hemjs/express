@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { ExpressAdapter } from '../src';
+import { ExpressAdapter } from '../../src';
 
 test('should return an instance of ExpressAdapter', () => {
   const adapter = new ExpressAdapter(express());
