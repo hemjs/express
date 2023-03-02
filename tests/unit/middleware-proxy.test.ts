@@ -1,12 +1,21 @@
 import { MiddlewareFactory } from '../../src';
+import { MiddlewareContainer } from '../../src/middleware-container';
 import { MiddlewareProxy } from '../../src/middleware-proxy';
+import { InMemoryContainer } from './in-memory-container';
 
 describe('MiddlewareProxy', () => {
+  let originContainer: InMemoryContainer;
   let proxy: MiddlewareProxy;
 
   beforeEach(() => {
-    const factory = new MiddlewareFactory();
+    originContainer = new InMemoryContainer();
+    const container = new MiddlewareContainer(originContainer);
+    const factory = new MiddlewareFactory(container);
     proxy = new MiddlewareProxy(factory);
+  });
+
+  afterEach(() => {
+    originContainer.reset();
   });
 
   describe('.bindHandler()', () => {

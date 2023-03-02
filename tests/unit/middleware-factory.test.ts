@@ -1,14 +1,24 @@
 import { CallableErrorMiddlewareDecorator } from '../../src/decorators/callable-error-middleware.decorator';
 import { CallableMiddlewareDecorator } from '../../src/decorators/callable-middleware.decorator';
+import { MiddlewareContainer } from '../../src/middleware-container';
 import { MiddlewareFactory } from '../../src/middleware-factory';
 import { NoopMiddleware } from './fixtures/noop-middleware';
 import { NormalMiddleware } from './fixtures/normal-middleware';
+import { InMemoryContainer } from './in-memory-container';
 
 describe('MiddlewareFactory', () => {
+  let originContainer: InMemoryContainer;
+  let container: MiddlewareContainer;
   let factory: MiddlewareFactory;
 
   beforeEach(() => {
-    factory = new MiddlewareFactory();
+    originContainer = new InMemoryContainer();
+    container = new MiddlewareContainer(originContainer);
+    factory = new MiddlewareFactory(container);
+  });
+
+  afterEach(() => {
+    originContainer.reset();
   });
 
   it('should prepare middleware instance verbatim', () => {
@@ -57,6 +67,37 @@ describe('MiddlewareFactory', () => {
     const middleware2 = new NormalMiddleware();
     const middleware = factory.pipeline([middleware1, middleware2]);
     expect(middleware).toEqual([middleware1, middleware2]);
+  });
+
+  it('should lazy prepare middleware when string', () => {
+    const token = 'middleware-service';
+    const middleware = new NormalMiddleware();
+    originContainer.set(token, middleware);
+    expect(factory.prepare(token)).toEqual(
+      container.get<NormalMiddleware>(token),
+    );
+  });
+
+  it('should lazy prepare middleware when symbol', () => {
+    const token = Symbol('middleware-service');
+    const middleware = new NormalMiddleware();
+    originContainer.set(token, middleware);
+    expect(factory.prepare(token)).toEqual(
+      container.get<NormalMiddleware>(token),
+    );
+  });
+
+  it('should lazy prepare middleware when string array', () => {
+    const token1 = 'middleware-service1';
+    const middleware1 = new NormalMiddleware();
+    const token2 = 'middleware-service2';
+    const middleware2 = new NormalMiddleware();
+    originContainer.set(token1, middleware1);
+    originContainer.set(token2, middleware2);
+    expect(factory.prepare([token1, token2])).toEqual([
+      container.get<NormalMiddleware>(token1),
+      container.get<NormalMiddleware>(token2),
+    ]);
   });
 
   it('should reject noop class as middleware', () => {

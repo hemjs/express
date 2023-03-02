@@ -1,10 +1,13 @@
-import { isFunction, isUndefined } from '@hemjs/notions';
+import { isFunction, isString, isSymbol, isUndefined } from '@hemjs/notions';
 import type { Type } from '@hemtypes/core';
 import { CallableErrorMiddlewareDecorator } from './decorators/callable-error-middleware.decorator';
 import { CallableMiddlewareDecorator } from './decorators/callable-middleware.decorator';
+import type { MiddlewareContainer } from './middleware-container';
 import type { HemMiddleware } from './types';
 
 export class MiddlewareFactory {
+  constructor(private readonly container: MiddlewareContainer) {}
+
   public prepare(middleware: any): HemMiddleware | HemMiddleware[] {
     if (Array.isArray(middleware)) {
       return this.pipeline(middleware);
@@ -28,7 +31,11 @@ export class MiddlewareFactory {
       return this.callable(middleware);
     }
 
-    throw new Error('Invalid middleware');
+    if (!isString(middleware) && !isSymbol(middleware)) {
+      throw new Error('Invalid middleware');
+    }
+
+    return this.lazy(middleware);
   }
 
   public callable(middleware: Function): HemMiddleware {
@@ -36,6 +43,10 @@ export class MiddlewareFactory {
       return new CallableErrorMiddlewareDecorator(middleware);
     }
     return new CallableMiddlewareDecorator(middleware);
+  }
+
+  public lazy(middleware: string | symbol): HemMiddleware {
+    return this.container.get<HemMiddleware>(middleware);
   }
 
   public pipeline(middleware: any[]): HemMiddleware[] {
