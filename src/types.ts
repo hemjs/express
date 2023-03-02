@@ -15,6 +15,11 @@ export type RequestHandler<TRequest = any, TResponse = any> = (
   next?: NextFunction,
 ) => any;
 
+export interface HemMiddleware<TRequest = any, TResponse = any> {
+  process(err: any, req: TRequest, res: TResponse, next?: NextFunction): any;
+  process(req: TRequest, res: TResponse, next?: NextFunction): any;
+}
+
 export type Handler = ErrorHandler | RequestHandler;
 
 export type HandlerArgument = Handler | Handler[];
