@@ -9,6 +9,10 @@ export class ExpressAdapter {
 
   constructor(private readonly instance: express.Application) {}
 
+  public use(...args: any[]) {
+    return this.instance.use(...args);
+  }
+
   public get(path: PathArgument, handler: HandlerArgument) {
     return this.instance.get(path, handler);
   }
