@@ -13,6 +13,15 @@ export class ExpressAdapter {
     return this.instance.use(...args);
   }
 
+  public pipe(
+    handlerOrPath: PathArgument | HandlerArgument,
+    handler?: HandlerArgument,
+  ) {
+    handler = handler ?? (handlerOrPath as HandlerArgument);
+    const path = handler === handlerOrPath ? '/' : handlerOrPath;
+    return this.use(path, handler);
+  }
+
   public get(path: PathArgument, handler: HandlerArgument) {
     return this.instance.get(path, handler);
   }
