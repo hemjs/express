@@ -1,3 +1,5 @@
+import { Type } from '@hemtypes/core';
+
 export type PathArgument = string | RegExp | (string | RegExp)[];
 
 export type NextFunction = (err?: any) => void;
@@ -20,6 +22,13 @@ export interface HemMiddleware<TRequest = any, TResponse = any> {
   process(req: TRequest, res: TResponse, next?: NextFunction): any;
 }
 
-export type Handler = ErrorHandler | RequestHandler;
+export type Handler =
+  | ErrorHandler
+  | RequestHandler
+  | HemMiddleware
+  | Type<any>
+  | Function
+  | string
+  | Symbol;
 
 export type HandlerArgument = Handler | Handler[];
