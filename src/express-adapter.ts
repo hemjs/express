@@ -94,4 +94,16 @@ export class ExpressAdapter {
     }
     return new Promise((resolve) => this.httpServer.close(resolve));
   }
+
+  public set(setting: string, val: any) {
+    return this.instance.set(setting, val);
+  }
+
+  public enable(setting: string) {
+    return this.instance.enable(setting);
+  }
+
+  public disable(setting: string) {
+    return this.instance.disable(setting);
+  }
 }
