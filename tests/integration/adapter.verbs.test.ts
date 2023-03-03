@@ -29,4 +29,18 @@ describe('HTTP Verbs', () => {
       await request(adapter.getHttpServer()).post('/').expect(200, 'value');
     });
   });
+
+  describe('.head()', () => {
+    it('should support HEAD method', async () => {
+      adapter.head('/', (req: any, res: any) => res.send('value'));
+      await request(adapter.getHttpServer()).head('/').expect(200);
+    });
+  });
+
+  describe('.delete()', () => {
+    it('should support DELETE method', async () => {
+      adapter.delete('/', (req: any, res: any) => res.send('value'));
+      await request(adapter.getHttpServer()).delete('/').expect(200, 'value');
+    });
+  });
 });

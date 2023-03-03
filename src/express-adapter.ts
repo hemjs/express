@@ -34,6 +34,14 @@ export class ExpressAdapter {
     return this.instance.post(path, this.proxy.bindHandler(handler));
   }
 
+  public head(path: PathArgument, handler: HandlerArgument) {
+    return this.instance.head(path, this.proxy.bindHandler(handler));
+  }
+
+  public delete(path: PathArgument, handler: HandlerArgument) {
+    return this.instance.delete(path, this.proxy.bindHandler(handler));
+  }
+
   public getInstance() {
     return this.instance;
   }
