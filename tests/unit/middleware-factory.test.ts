@@ -1,10 +1,12 @@
 import {
   CallableErrorMiddlewareDecorator,
   CallableMiddlewareDecorator,
+  HemHandlerMiddlewareDecorator,
   MiddlewareContainer,
   MiddlewareFactory,
 } from '../../src';
 import { NoopMiddleware } from './fixtures/noop-middleware';
+import { NormalHandler } from './fixtures/normal-handler';
 import { NormalMiddleware } from './fixtures/normal-middleware';
 import { InMemoryContainer } from './in-memory-container';
 
@@ -31,6 +33,23 @@ describe('MiddlewareFactory', () => {
   it('should prepare middleware class as middleware', () => {
     const middleware = factory.prepare(NormalMiddleware);
     expect(middleware).toBeInstanceOf(NormalMiddleware);
+  });
+
+  it('should prepare hem handler as middleware', () => {
+    const handler = new NormalHandler();
+    const middleware = factory.prepare(handler);
+    expect(middleware).toEqual(new HemHandlerMiddlewareDecorator(handler));
+  });
+
+  it('should decorate hem handler as middleware', () => {
+    const handler = new NormalHandler();
+    const middleware = factory.handler(handler);
+    expect(middleware).toEqual(new HemHandlerMiddlewareDecorator(handler));
+  });
+
+  it('should prepare hem handler class as middleware', () => {
+    const middleware = factory.prepare(NormalHandler);
+    expect(middleware).toEqual(factory.handler(new NormalHandler()));
   });
 
   it('should prepare callable as middleware', () => {

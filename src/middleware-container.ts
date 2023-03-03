@@ -1,6 +1,7 @@
 import { isFunction } from '@hemjs/notions';
 import type { Container, ProviderToken } from '@hemtypes/container';
 import type { Type } from '@hemtypes/core';
+import { HemHandlerMiddlewareDecorator } from './decorators';
 
 export class MiddlewareContainer implements Container {
   constructor(private readonly container: Container) {}
@@ -17,6 +18,10 @@ export class MiddlewareContainer implements Container {
     } else {
       const metatype = token as Type<any>;
       middleware = new metatype();
+    }
+
+    if (middleware.handle) {
+      middleware = new HemHandlerMiddlewareDecorator(middleware);
     }
 
     if (!middleware.process) {

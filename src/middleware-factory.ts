@@ -1,9 +1,12 @@
 import { isFunction, isString, isSymbol, isUndefined } from '@hemjs/notions';
 import type { Type } from '@hemtypes/core';
-import { CallableErrorMiddlewareDecorator } from './decorators/callable-error-middleware.decorator';
-import { CallableMiddlewareDecorator } from './decorators/callable-middleware.decorator';
+import {
+  CallableErrorMiddlewareDecorator,
+  CallableMiddlewareDecorator,
+  HemHandlerMiddlewareDecorator,
+} from './decorators';
 import type { MiddlewareContainer } from './middleware-container';
-import type { HemMiddleware } from './types';
+import type { HemHandler, HemMiddleware } from './types';
 
 export class MiddlewareFactory {
   constructor(private readonly container: MiddlewareContainer) {}
@@ -17,8 +20,16 @@ export class MiddlewareFactory {
       return middleware;
     }
 
+    if (middleware?.handle) {
+      return this.handler(middleware);
+    }
+
     if (this.isMiddlewareClass(middleware)) {
       const instance = new middleware();
+
+      if (isFunction(instance.handle)) {
+        return this.handler(instance);
+      }
 
       if (isUndefined(instance.process)) {
         throw new Error('Invalid middleware');
@@ -43,6 +54,10 @@ export class MiddlewareFactory {
       return new CallableErrorMiddlewareDecorator(middleware);
     }
     return new CallableMiddlewareDecorator(middleware);
+  }
+
+  public handler(middleware: HemHandler): HemMiddleware {
+    return new HemHandlerMiddlewareDecorator(middleware);
   }
 
   public lazy(middleware: string | symbol): HemMiddleware {
