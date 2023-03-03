@@ -50,6 +50,14 @@ export class ExpressAdapter {
     return this.instance.patch(path, this.proxy.bindHandler(handler));
   }
 
+  public all(path: PathArgument, handler: HandlerArgument) {
+    return this.instance.all(path, this.proxy.bindHandler(handler));
+  }
+
+  public options(path: PathArgument, handler: HandlerArgument) {
+    return this.instance.options(path, this.proxy.bindHandler(handler));
+  }
+
   public getInstance() {
     return this.instance;
   }

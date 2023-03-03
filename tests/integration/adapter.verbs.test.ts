@@ -57,4 +57,20 @@ describe('HTTP Verbs', () => {
       await request(adapter.getHttpServer()).patch('/').expect(200, 'value');
     });
   });
+
+  describe('.all()', () => {
+    it('should support ALL method', async () => {
+      adapter.all('/', (req: any, res: any) => res.end(req.method));
+      await request(adapter.getHttpServer()).get('/').expect(200, 'GET');
+    });
+  });
+
+  describe('.options()', () => {
+    it('should support OPTIONS method', async () => {
+      adapter.get('/', (req: any, res: any) => res.send('value'));
+      await request(adapter.getHttpServer())
+        .options('/')
+        .expect(200, 'GET,HEAD');
+    });
+  });
 });
