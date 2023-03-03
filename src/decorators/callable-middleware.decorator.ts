@@ -1,4 +1,4 @@
-import { HemMiddleware } from '../types';
+import type { HemMiddleware } from '../types';
 
 export class CallableMiddlewareDecorator implements HemMiddleware {
   constructor(private readonly callable: Function) {}

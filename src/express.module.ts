@@ -32,7 +32,10 @@ export class ExpressModule {
         {
           provide: ExpressAdapter.name,
           useFactory: (container: Container) => {
-            return new ExpressAdapter(express());
+            return new ExpressAdapter(
+              express(),
+              container.get<MiddlewareProxy>(MiddlewareProxy.name),
+            );
           },
         },
       ],

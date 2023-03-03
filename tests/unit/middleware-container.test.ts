@@ -1,4 +1,4 @@
-import { MiddlewareContainer } from '../../src/middleware-container';
+import { MiddlewareContainer } from '../../src';
 import { NormalMiddleware } from './fixtures/normal-middleware';
 import { InMemoryContainer } from './in-memory-container';
 

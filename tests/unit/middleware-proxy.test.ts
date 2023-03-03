@@ -1,6 +1,8 @@
-import { MiddlewareFactory } from '../../src';
-import { MiddlewareContainer } from '../../src/middleware-container';
-import { MiddlewareProxy } from '../../src/middleware-proxy';
+import {
+  MiddlewareContainer,
+  MiddlewareFactory,
+  MiddlewareProxy,
+} from '../../src';
 import { InMemoryContainer } from './in-memory-container';
 
 describe('MiddlewareProxy', () => {

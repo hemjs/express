@@ -1,4 +1,4 @@
-import { CallableMiddlewareDecorator } from '../../../src/decorators/callable-middleware.decorator';
+import { CallableMiddlewareDecorator } from '../../../src';
 
 test('should produce response when process call', () => {
   const middleware = (req: any, res: any): string => 'foo';

@@ -2,12 +2,16 @@ import * as express from 'express';
 import * as http from 'http';
 import * as https from 'https';
 import type { Server } from 'net';
+import type { MiddlewareProxy } from './middleware-proxy';
 import type { HandlerArgument, PathArgument } from './types';
 
 export class ExpressAdapter {
   protected httpServer!: http.Server | https.Server;
 
-  constructor(private readonly instance: express.Application) {}
+  constructor(
+    private readonly instance: express.Application,
+    private readonly proxy: MiddlewareProxy,
+  ) {}
 
   public use(...args: any[]) {
     return this.instance.use(...args);
@@ -19,15 +23,15 @@ export class ExpressAdapter {
   ) {
     handler = handler ?? (handlerOrPath as HandlerArgument);
     const path = handler === handlerOrPath ? '/' : handlerOrPath;
-    return this.use(path, handler);
+    return this.use(path, this.proxy.bindHandler(handler));
   }
 
   public get(path: PathArgument, handler: HandlerArgument) {
-    return this.instance.get(path, handler);
+    return this.instance.get(path, this.proxy.bindHandler(handler));
   }
 
   public post(path: PathArgument, handler: HandlerArgument) {
-    return this.instance.post(path, handler);
+    return this.instance.post(path, this.proxy.bindHandler(handler));
   }
 
   public getInstance() {

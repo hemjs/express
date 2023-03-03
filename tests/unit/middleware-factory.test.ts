@@ -1,7 +1,9 @@
-import { CallableErrorMiddlewareDecorator } from '../../src/decorators/callable-error-middleware.decorator';
-import { CallableMiddlewareDecorator } from '../../src/decorators/callable-middleware.decorator';
-import { MiddlewareContainer } from '../../src/middleware-container';
-import { MiddlewareFactory } from '../../src/middleware-factory';
+import {
+  CallableErrorMiddlewareDecorator,
+  CallableMiddlewareDecorator,
+  MiddlewareContainer,
+  MiddlewareFactory,
+} from '../../src';
 import { NoopMiddleware } from './fixtures/noop-middleware';
 import { NormalMiddleware } from './fixtures/normal-middleware';
 import { InMemoryContainer } from './in-memory-container';

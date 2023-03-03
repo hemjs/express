@@ -1,8 +1,11 @@
 import { Provider } from '@hemtypes/container';
-import { ExpressAdapter, MiddlewareFactory } from '../../src';
-import { ExpressModule } from '../../src/express.module';
-import { MiddlewareContainer } from '../../src/middleware-container';
-import { MiddlewareProxy } from '../../src/middleware-proxy';
+import {
+  ExpressAdapter,
+  ExpressModule,
+  MiddlewareContainer,
+  MiddlewareFactory,
+  MiddlewareProxy,
+} from '../../src';
 
 describe('ExpressAdapterModule', () => {
   let providers: Provider[];
