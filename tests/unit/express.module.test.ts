@@ -7,7 +7,7 @@ import {
   MiddlewareProxy,
 } from '../../src';
 
-describe('ExpressAdapterModule', () => {
+describe('ExpressModule', () => {
   let providers: Provider[];
 
   beforeEach(() => {
