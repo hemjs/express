@@ -70,6 +70,20 @@ export class ExpressAdapter {
     return this.httpServer;
   }
 
+  public setErrorHandler(
+    handlerOrPath: PathArgument | HandlerArgument,
+    handler?: HandlerArgument,
+  ) {
+    return this.pipe(handlerOrPath, handler);
+  }
+
+  public setNotFoundHandler(
+    handlerOrPath: PathArgument | HandlerArgument,
+    handler?: HandlerArgument,
+  ) {
+    return this.pipe(handlerOrPath, handler);
+  }
+
   public listen(port: string | number, callback?: () => void): Server;
   public listen(
     port: string | number,
