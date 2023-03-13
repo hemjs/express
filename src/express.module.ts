@@ -4,11 +4,18 @@ import { MiddlewareFactory } from './middleware-factory';
 import { ExpressAdapter } from './express-adapter';
 import { MiddlewareContainer } from './middleware-container';
 import { MiddlewareProxy } from './middleware-proxy';
+import { ErrorHandler } from './middleware/error-handler';
+import { ERROR_HANDLER } from './constants';
+import { HemMiddleware } from './types';
 
 export class ExpressModule {
   register(): { providers: Provider[] } {
     return {
       providers: [
+        {
+          provide: ErrorHandler.name,
+          useClass: ErrorHandler,
+        },
         {
           provide: MiddlewareContainer.name,
           useFactory: (container: Container) => {
@@ -26,7 +33,13 @@ export class ExpressModule {
         {
           provide: MiddlewareProxy.name,
           useFactory: (container: Container) => {
-            return new MiddlewareProxy(container.get(MiddlewareFactory.name));
+            const errorHandler = container.has(ERROR_HANDLER)
+              ? container.get<HemMiddleware>(ERROR_HANDLER)
+              : undefined;
+            return new MiddlewareProxy(
+              container.get(MiddlewareFactory.name),
+              errorHandler,
+            );
           },
         },
         {

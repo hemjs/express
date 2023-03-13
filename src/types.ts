@@ -2,14 +2,14 @@ import { Type } from '@hemtypes/core';
 
 export type PathArgument = string | RegExp | (string | RegExp)[];
 
-export type ErrorHandler<TRequest = any, TResponse = any> = (
-  err: any,
+export type RequestHandler<TRequest = any, TResponse = any> = (
   req: TRequest,
   res: TResponse,
   next?: any,
 ) => any;
 
-export type RequestHandler<TRequest = any, TResponse = any> = (
+export type ErrorRequestHandler<TRequest = any, TResponse = any> = (
+  err: any,
   req: TRequest,
   res: TResponse,
   next?: any,
@@ -25,7 +25,7 @@ export interface HemMiddleware<TRequest = any, TResponse = any> {
 }
 
 export type Handler =
-  | ErrorHandler
+  | ErrorRequestHandler
   | RequestHandler
   | HemMiddleware
   | HemHandler

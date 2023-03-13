@@ -1,5 +1,6 @@
 import { Provider } from '@hemtypes/container';
 import {
+  ErrorHandler,
   ExpressAdapter,
   ExpressModule,
   MiddlewareContainer,
@@ -15,6 +16,11 @@ describe('ExpressModule', () => {
   });
 
   it('should define expected providers', () => {
+    expect(providers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ provide: ErrorHandler.name }),
+      ]),
+    );
     expect(providers).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ provide: MiddlewareContainer.name }),
