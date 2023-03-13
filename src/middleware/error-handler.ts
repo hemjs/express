@@ -12,7 +12,7 @@ export class ErrorHandler implements HemMiddleware {
     console.log(err.message);
   }
 
-  private reply(response: any, body: any, statusCode?: number) {
+  public reply(response: any, body: any, statusCode?: number) {
     if (statusCode) {
       response.status(statusCode);
     }
