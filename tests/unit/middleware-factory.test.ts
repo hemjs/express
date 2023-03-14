@@ -1,7 +1,7 @@
 import {
   CallableErrorMiddlewareDecorator,
   CallableMiddlewareDecorator,
-  HemHandlerMiddlewareDecorator,
+  HemHandlerMiddleware,
   MiddlewareContainer,
   MiddlewareFactory,
 } from '../../src';
@@ -38,13 +38,13 @@ describe('MiddlewareFactory', () => {
   it('should prepare hem handler as middleware', () => {
     const handler = new NormalHandler();
     const middleware = factory.prepare(handler);
-    expect(middleware).toEqual(new HemHandlerMiddlewareDecorator(handler));
+    expect(middleware).toEqual(new HemHandlerMiddleware(handler));
   });
 
   it('should decorate hem handler as middleware', () => {
     const handler = new NormalHandler();
     const middleware = factory.handler(handler);
-    expect(middleware).toEqual(new HemHandlerMiddlewareDecorator(handler));
+    expect(middleware).toEqual(new HemHandlerMiddleware(handler));
   });
 
   it('should prepare hem handler class as middleware', () => {

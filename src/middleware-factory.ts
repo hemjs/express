@@ -1,11 +1,11 @@
 import { isFunction, isString, isSymbol, isUndefined } from '@hemjs/notions';
 import type { Type } from '@hemtypes/core';
+import type { MiddlewareContainer } from './middleware-container';
 import {
   CallableErrorMiddlewareDecorator,
   CallableMiddlewareDecorator,
-  HemHandlerMiddlewareDecorator,
-} from './decorators';
-import type { MiddlewareContainer } from './middleware-container';
+  HemHandlerMiddleware,
+} from './middleware';
 import type { HemHandler, HemMiddleware } from './types';
 
 export class MiddlewareFactory {
@@ -57,7 +57,7 @@ export class MiddlewareFactory {
   }
 
   public handler(middleware: HemHandler): HemMiddleware {
-    return new HemHandlerMiddlewareDecorator(middleware);
+    return new HemHandlerMiddleware(middleware);
   }
 
   public lazy(middleware: string | symbol): HemMiddleware {

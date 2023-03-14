@@ -1,5 +1,4 @@
 export * from './constants';
-export * from './decorators';
 export * from './express-adapter';
 export * from './express.module';
 export * from './middleware';

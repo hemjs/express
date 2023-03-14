@@ -1,4 +1,4 @@
-import { HemHandlerMiddlewareDecorator, MiddlewareContainer } from '../../src';
+import { HemHandlerMiddleware, MiddlewareContainer } from '../../src';
 import { NormalHandler } from './fixtures/normal-handler';
 import { NormalMiddleware } from './fixtures/normal-middleware';
 import { InMemoryContainer } from './in-memory-container';
@@ -45,7 +45,7 @@ describe('MiddlewareContainer', () => {
   it('should decorate hem handler as middleware', async () => {
     originContainer.set('handler-service', new NormalHandler());
     expect(container.get('handler-service')).toEqual(
-      new HemHandlerMiddlewareDecorator(new NormalHandler()),
+      new HemHandlerMiddleware(new NormalHandler()),
     );
   });
 
