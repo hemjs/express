@@ -5,16 +5,28 @@ import { ExpressAdapter } from './express-adapter';
 import { MiddlewareContainer } from './middleware-container';
 import { MiddlewareProxy } from './middleware-proxy';
 import { ErrorHandler } from './middleware/error-handler';
-import { ERROR_HANDLER } from './constants';
-import { HemMiddleware } from './types';
+import { ERROR_HANDLER, ERROR_RESPONSE_GENERATOR } from './constants';
+import { ErrorResponseGenerator, HemMiddleware } from './types';
+import { DefaultErrorResponseGenerator } from './response';
 
 export class ExpressModule {
   register(): { providers: Provider[] } {
     return {
       providers: [
         {
+          provide: DefaultErrorResponseGenerator.name,
+          useClass: DefaultErrorResponseGenerator,
+        },
+        {
           provide: ErrorHandler.name,
-          useClass: ErrorHandler,
+          useFactory: (container: Container) => {
+            const generator = container.has(ERROR_RESPONSE_GENERATOR)
+              ? container.get<ErrorResponseGenerator>(ERROR_RESPONSE_GENERATOR)
+              : container.get<ErrorResponseGenerator>(
+                  DefaultErrorResponseGenerator.name,
+                );
+            return new ErrorHandler(generator);
+          },
         },
         {
           provide: MiddlewareContainer.name,

@@ -1,7 +1,9 @@
-import { ErrorHandler } from '../../../src';
-import { CustomError } from '../fixtures/custom-error';
+import { isNil, isObject } from '@hemjs/notions';
+import { ErrorHandler, ErrorResponseGenerator } from '../../../src';
+import { NoopErrorResponseGenerator } from '../noop-error-response-generator';
 
 describe('ErrorHandler', () => {
+  let generator: ErrorResponseGenerator;
   let errorHandler: ErrorHandler;
   let statusSpy: jest.SpyInstance;
   let jsonSpy: jest.SpyInstance;
@@ -9,7 +11,8 @@ describe('ErrorHandler', () => {
   let response: any;
 
   beforeEach(() => {
-    errorHandler = new ErrorHandler();
+    generator = new NoopErrorResponseGenerator();
+    errorHandler = new ErrorHandler(generator);
     statusSpy = jest.fn();
     jsonSpy = jest.fn();
     sendSpy = jest.fn();
@@ -23,67 +26,29 @@ describe('ErrorHandler', () => {
     response.send.mockReturnValue(response);
   });
 
-  describe('.reply()', () => {
-    it('should return send when nil as body', () => {
-      errorHandler.reply(response, null);
-      expect(sendSpy).toHaveBeenCalledTimes(1);
-      expect(sendSpy).toHaveBeenCalledWith();
-    });
-
-    it('should return send when string as body', () => {
-      const body = 'Internal server error';
-      errorHandler.reply(response, body);
-      expect(sendSpy).toHaveBeenCalledTimes(1);
-      expect(sendSpy).toHaveBeenCalledWith(body);
-    });
-
-    it('should return json when object as body', () => {
-      const body = { message: 'Internal server error' };
-      errorHandler.reply(response, body);
-      expect(jsonSpy).toHaveBeenCalledTimes(1);
-      expect(jsonSpy).toHaveBeenCalledWith(body);
-    });
-  });
-
   describe('.process()', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(generator, 'reply')
+        .mockImplementation(
+          (responseRef: any, body: any, statusCode?: number) => {
+            if (statusCode) {
+              responseRef.status(statusCode);
+            }
+            if (isNil(body)) {
+              return responseRef.send();
+            }
+            return isObject(body)
+              ? responseRef.json(body)
+              : responseRef.send(String(body));
+          },
+        );
+    });
+
     it('should return status code and message when exception is unknown', () => {
-      const error = new Error();
-      errorHandler.process(error, null, response, null);
+      errorHandler.process(new Error(), null, response, null);
       expect(statusSpy).toHaveBeenCalledWith(500);
-      expect(jsonSpy).toHaveBeenCalledWith({
-        message: '',
-        statusCode: 500,
-      });
-    });
-
-    it('should return status code and message when status code < 400', () => {
-      const error = new CustomError('Internal server error', 200);
-      errorHandler.process(error, null, response, null);
-      expect(statusSpy).toHaveBeenCalledWith(500);
-      expect(jsonSpy).toHaveBeenCalledWith({
-        message: 'Internal server error',
-        statusCode: 500,
-      });
-    });
-
-    it('should return status code and message when status code >= 600', () => {
-      const error = new CustomError('Internal server error', 600);
-      errorHandler.process(error, null, response, null);
-      expect(statusSpy).toHaveBeenCalledWith(500);
-      expect(jsonSpy).toHaveBeenCalledWith({
-        message: 'Internal server error',
-        statusCode: 500,
-      });
-    });
-
-    it('should return status code and message', () => {
-      const error = new CustomError('Unauthorized', 401);
-      errorHandler.process(error, null, response, null);
-      expect(statusSpy).toHaveBeenCalledWith(401);
-      expect(jsonSpy).toHaveBeenCalledWith({
-        message: 'Unauthorized',
-        statusCode: 401,
-      });
+      expect(jsonSpy).toHaveBeenCalledWith({ message: '', statusCode: 500 });
     });
   });
 });

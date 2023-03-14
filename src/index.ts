@@ -6,4 +6,6 @@ export * from './middleware';
 export * from './middleware-container';
 export * from './middleware-factory';
 export * from './middleware-proxy';
+export * from './response';
 export * from './types';
+export * from './utils';

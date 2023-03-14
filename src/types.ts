@@ -49,3 +49,7 @@ export interface ServeStaticOptions {
   setHeaders?: (res: any, path: string, stat: any) => any;
   prefix?: string;
 }
+
+export interface ErrorResponseGenerator {
+  reply(response: any, body: any, statusCode?: number): any;
+}

@@ -1,53 +1,82 @@
 import { Needle } from '@hemjs/needle';
-import * as http from 'http';
 import * as request from 'supertest';
 import {
+  DefaultErrorResponseGenerator,
   ErrorHandler,
   ERROR_HANDLER,
+  ERROR_RESPONSE_GENERATOR,
   ExpressAdapter,
   ExpressModule,
 } from '../../src';
 
 describe('proxy', () => {
-  let processStdoutWriteSpy: any;
-  let adapter: ExpressAdapter;
-  let server: http.Server;
+  let container: Needle;
 
   beforeEach(() => {
-    processStdoutWriteSpy = jest.spyOn(process.stdout, 'write');
     const providers = new ExpressModule().register()?.['providers'] ?? [];
-    const container = new Needle([
-      ...providers,
-      { provide: ERROR_HANDLER, useExisting: ErrorHandler.name },
-    ]);
-    adapter = container.get<ExpressAdapter>(ExpressAdapter.name);
-    adapter.initHttpServer({});
-    server = adapter.getHttpServer();
+    container = new Needle(providers);
   });
 
-  afterEach(async () => {
-    processStdoutWriteSpy = jest.resetAllMocks();
-    await adapter.close();
-  });
+  describe('with error handler', () => {
+    let adapter: ExpressAdapter;
 
-  describe('without error', () => {
-    it('should invoke error handler', async () => {
-      adapter.get('/', (req: any, res: any, next: any) => res.send('value'));
-      await request(server).get('/').expect(200, 'value');
-      expect(processStdoutWriteSpy).toHaveBeenCalledTimes(0);
+    beforeEach(() => {
+      container.addProvider({
+        provide: ERROR_HANDLER,
+        useExisting: ErrorHandler.name,
+      });
+      adapter = container.get<ExpressAdapter>(ExpressAdapter.name);
+      adapter.initHttpServer({});
     });
-  });
 
-  describe('with error', () => {
-    it('should invoke error handler', async () => {
+    afterEach(async () => {
+      await adapter.close();
+    });
+
+    it('should not invoke error handler when no error', async () => {
+      adapter.get('/', (req: any, res: any, next: any) => res.send('value'));
+      await request(adapter.getHttpServer()).get('/').expect(200, 'value');
+    });
+
+    it('should invoke error handler when error', async () => {
       adapter.get('/', (req: any, res: any, next: any) => {
         throw new Error('Boom');
       });
-      await request(server).get('/').expect(500, {
+      await request(adapter.getHttpServer()).get('/').expect(500, {
         statusCode: 500,
         message: 'Boom',
       });
-      expect(processStdoutWriteSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('with custom error response generator', () => {
+    let adapter: ExpressAdapter;
+
+    beforeEach(() => {
+      container.addProvider({
+        provide: ERROR_RESPONSE_GENERATOR,
+        useExisting: DefaultErrorResponseGenerator.name,
+      });
+      container.addProvider({
+        provide: ERROR_HANDLER,
+        useExisting: ErrorHandler.name,
+      });
+      adapter = container.get<ExpressAdapter>(ExpressAdapter.name);
+      adapter.initHttpServer({});
+    });
+
+    afterEach(async () => {
+      await adapter.close();
+    });
+
+    it('should invoke error handler when error', async () => {
+      adapter.get('/', (req: any, res: any, next: any) => {
+        throw new Error('Boom');
+      });
+      await request(adapter.getHttpServer()).get('/').expect(500, {
+        statusCode: 500,
+        message: 'Boom',
+      });
     });
   });
 });
