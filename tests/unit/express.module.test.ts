@@ -1,5 +1,7 @@
-import { Provider } from '@hemtypes/container';
+import type { Provider } from '@hemtypes/container';
 import {
+  DefaultErrorResponseGenerator,
+  ErrorHandler,
   ExpressAdapter,
   ExpressModule,
   MiddlewareContainer,
@@ -15,6 +17,18 @@ describe('ExpressModule', () => {
   });
 
   it('should define expected providers', () => {
+    expect(providers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          provide: DefaultErrorResponseGenerator.name,
+        }),
+      ]),
+    );
+    expect(providers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ provide: ErrorHandler.name }),
+      ]),
+    );
     expect(providers).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ provide: MiddlewareContainer.name }),
