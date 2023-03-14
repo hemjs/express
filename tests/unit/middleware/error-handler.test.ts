@@ -1,5 +1,5 @@
 import { isNil, isObject } from '@hemjs/notions';
-import { ErrorHandler, ErrorResponseGenerator } from '../../../src';
+import { ErrorHandler, type ErrorResponseGenerator } from '../../../src';
 import { NoopErrorResponseGenerator } from '../noop-error-response-generator';
 
 describe('ErrorHandler', () => {

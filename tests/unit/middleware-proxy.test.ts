@@ -1,5 +1,5 @@
 import {
-  HemMiddleware,
+  type HemMiddleware,
   MiddlewareContainer,
   MiddlewareFactory,
   MiddlewareProxy,

@@ -1,6 +1,6 @@
 import {
   DefaultErrorResponseGenerator,
-  ErrorResponseGenerator,
+  type ErrorResponseGenerator,
 } from '../../../src';
 
 describe('DefaultErrorResponseGenerator', () => {

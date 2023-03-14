@@ -1,4 +1,4 @@
-import { ErrorResponseGenerator, HemMiddleware } from '../types';
+import type { ErrorResponseGenerator, HemMiddleware } from '../types';
 import { getStatusCode } from '../utils';
 
 export class ErrorHandler implements HemMiddleware {

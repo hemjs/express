@@ -1,5 +1,5 @@
 import { isNil, isObject } from '@hemjs/notions';
-import { ErrorResponseGenerator } from '../types';
+import type { ErrorResponseGenerator } from '../types';
 
 export class DefaultErrorResponseGenerator implements ErrorResponseGenerator {
   reply(response: any, body: any, statusCode?: number) {

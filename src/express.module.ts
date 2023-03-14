@@ -6,7 +6,7 @@ import { MiddlewareContainer } from './middleware-container';
 import { MiddlewareProxy } from './middleware-proxy';
 import { ErrorHandler } from './middleware/error-handler';
 import { ERROR_HANDLER, ERROR_RESPONSE_GENERATOR } from './constants';
-import { ErrorResponseGenerator, HemMiddleware } from './types';
+import type { ErrorResponseGenerator, HemMiddleware } from './types';
 import { DefaultErrorResponseGenerator } from './response';
 
 export class ExpressModule {
