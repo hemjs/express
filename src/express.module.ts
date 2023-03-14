@@ -4,10 +4,11 @@ import { MiddlewareFactory } from './middleware-factory';
 import { ExpressAdapter } from './express-adapter';
 import { MiddlewareContainer } from './middleware-container';
 import { MiddlewareProxy } from './middleware-proxy';
-import { ErrorHandler } from './middleware/error-handler';
+import { ErrorHandler } from './middleware';
 import { ERROR_HANDLER, ERROR_RESPONSE_GENERATOR } from './constants';
 import type { ErrorResponseGenerator, HemMiddleware } from './types';
 import { DefaultErrorResponseGenerator } from './response';
+import { NotFoundHandler } from './handler';
 
 export class ExpressModule {
   register(): { providers: Provider[] } {
@@ -27,6 +28,10 @@ export class ExpressModule {
                 );
             return new ErrorHandler(generator);
           },
+        },
+        {
+          provide: NotFoundHandler.name,
+          useClass: NotFoundHandler,
         },
         {
           provide: MiddlewareContainer.name,

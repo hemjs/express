@@ -1,6 +1,7 @@
 export * from './constants';
 export * from './express-adapter';
 export * from './express.module';
+export * from './handler';
 export * from './middleware';
 export * from './middleware-container';
 export * from './middleware-factory';

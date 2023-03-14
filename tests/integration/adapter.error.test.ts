@@ -1,6 +1,11 @@
 import { Needle } from '@hemjs/needle';
 import * as request from 'supertest';
-import { ErrorHandler, ExpressAdapter, ExpressModule } from '../../src';
+import {
+  ErrorHandler,
+  ExpressAdapter,
+  ExpressModule,
+  NotFoundHandler,
+} from '../../src';
 
 describe('error', () => {
   let adapter: ExpressAdapter;
@@ -41,12 +46,12 @@ describe('error', () => {
     });
 
     it('should invoke error handler when hem middleware', async () => {
-      adapter.get('/', (req: any, res: any, next: any) =>
+      adapter.get('/foo', (req: any, res: any, next: any) =>
         next(new Error('boom!')),
       );
       adapter.setErrorHandler(ErrorHandler.name);
       await request(adapter.getHttpServer())
-        .get('/')
+        .get('/foo')
         .expect(500, { statusCode: 500, message: 'boom!' });
     });
   });
@@ -54,18 +59,27 @@ describe('error', () => {
   describe('.setNotFoundHandler()', () => {
     it('should invoke not-found handler', async () => {
       adapter.setNotFoundHandler((req: any, res: any, next: any) => {
-        res.status(404).send('Not found');
+        res.status(404).send(`Cannot ${req.method} ${req.url}`);
       });
-      await request(adapter.getHttpServer()).get('/').expect(404, 'Not found');
+      await request(adapter.getHttpServer())
+        .get('/')
+        .expect(404, 'Cannot GET /');
     });
 
     it('should invoke not-found handler when path', async () => {
       adapter.setNotFoundHandler('/api', (req: any, res: any, next: any) => {
-        res.status(404).send('Not found');
+        res.status(404).send(`Cannot ${req.method} ${req.url}`);
       });
       await request(adapter.getHttpServer())
         .get('/api')
-        .expect(404, 'Not found');
+        .expect(404, 'Cannot GET /');
+    });
+
+    it('should invoke not-found handler when hem handler', async () => {
+      adapter.setNotFoundHandler(NotFoundHandler.name);
+      await request(adapter.getHttpServer())
+        .get('/foo')
+        .expect(404, 'Cannot GET /foo');
     });
   });
 });

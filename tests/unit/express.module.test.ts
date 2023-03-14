@@ -7,6 +7,7 @@ import {
   MiddlewareContainer,
   MiddlewareFactory,
   MiddlewareProxy,
+  NotFoundHandler,
 } from '../../src';
 
 describe('ExpressModule', () => {
@@ -27,6 +28,11 @@ describe('ExpressModule', () => {
     expect(providers).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ provide: ErrorHandler.name }),
+      ]),
+    );
+    expect(providers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ provide: NotFoundHandler.name }),
       ]),
     );
     expect(providers).toEqual(
