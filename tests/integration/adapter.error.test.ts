@@ -1,6 +1,6 @@
 import { Needle } from '@hemjs/needle';
 import * as request from 'supertest';
-import { ExpressAdapter, ExpressModule } from '../../src';
+import { ErrorHandler, ExpressAdapter, ExpressModule } from '../../src';
 
 describe('error', () => {
   let adapter: ExpressAdapter;
@@ -38,6 +38,16 @@ describe('error', () => {
         },
       );
       await request(adapter.getHttpServer()).get('/api').expect(500, 'boom!');
+    });
+
+    it('should invoke error handler when hem middleware', async () => {
+      adapter.get('/', (req: any, res: any, next: any) =>
+        next(new Error('boom!')),
+      );
+      adapter.setErrorHandler(ErrorHandler.name);
+      await request(adapter.getHttpServer())
+        .get('/')
+        .expect(500, { statusCode: 500, message: 'boom!' });
     });
   });
 
